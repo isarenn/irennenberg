@@ -1,0 +1,261 @@
+/*
+Custom CSS template for ioslides
+
+Author: Matteo Courthoud
+Repo: https://github.com/matteocourthoud/ioslides-theme
+*/
+
+/* Import google fonts 
+@import url('https://fonts.googleapis.com/css?family=Lora|Open+Sans&display=swap'); */
+
+
+html, body {
+  background-color:#8fb0c4; /*slide background*/
+  color:  navy; /* The regular text color. */
+}
+
+.wrap {
+  width: 800px;
+  height: 550px;
+  overflow: hidden;
+}
+
+iframe {
+  width: 170% !important;
+  height: 200% !important;
+  -webkit-transform: scale(0.6);
+  transform: scale(0.6);
+  -webkit-transform-origin: 0 0;
+  transform-origin: 0 0;
+}
+
+
+aside.gdbar {
+    position: absolute;
+    top: initial;
+ /*  bottom: 0;
+   right:0;*/
+}
+
+
+slides > slide.title-slide{
+   background-color: #ffffff; /*#673753; */
+   /*background-image: url("logo.png");*/
+   background-position: right bottom;
+   background-repeat: no-repeat;
+  /* text-align: center;
+  font-weight: bold;
+  font-size: 24pt;
+  color: red;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); */
+}
+
+
+/* Slide: change font */
+slides > slide {
+  font-family: 'Source Sans Pro', sans-serif;
+  background-color:  white; 
+  overflow: scroll;
+}
+
+/* Slide: text color black */
+slides > slide > article {
+  color: black;
+  font-weight: 300;
+}
+
+/* Slide: transition slides white */
+slides > slide.dark {
+  background-color: #330b1e; !important; /*white !important;*/
+}
+
+/* Slide: transition slides white */
+slides > slide.dark0 {
+  background-color: #330b1e;!important; /*white !important;*/
+}
+
+ slides > slide:not(.title-slide) {
+  /* background-image: url("logo.png");*/
+   background-size: 0%;
+   background-repeat: no-repeat;
+   /*background-position: 50% 50%;*/
+   background-color:  #557972; /* added color*/
+ }
+
+/* two-column slides*/
+.forceBreak { -webkit-column-break-after: always; break-after: column; }
+
+
+
+/* Header: change color */
+h1 {
+  color: #4d0221 !important;
+  font-variant: small-caps;  
+  text-align: left;
+    /*padding: 10px 50px 10px 50px;   top right bottom left  */ 
+    /*margin: 125px 50px 75px 50px; */  
+    margin-top: 50px;
+}
+h2 {
+  color: #4d0221 !important;
+  text-align: center;
+    padding: 10px 50px 10px 50px;   /*top right bottom left  */
+    /*margin: 125px 50px 75px 50px; */  
+    margin-top: 20px;
+}
+h3 {
+  color: #fff  !important;
+  text-align: center;
+    padding: 5px;
+    margin-top: 10px;
+}
+h4 {
+  color: #fff  !important;
+  text-align: center;
+    padding: 5px;
+    margin-top: 10px;
+}
+h5 {
+  color: #fff  !important;
+  text-align: center;
+    padding: 5px;
+    margin-top: 10px;
+}
+
+/* Header: underline section slides */
+.auto-fadein {
+  width: 70%;
+}
+.auto-fadein > h1 {
+  border-bottom: 2px solid grey;
+  padding-bottom: 10px;
+}
+.auto-fadein > h2 {
+  border-bottom: 2px solid grey;
+  padding-bottom: 10px;
+}
+
+/* References: text color white
+.csl-entry p {
+  color: white;
+}
+*/
+
+/* Citations: colored */
+.cite {
+  color: lightskyblue;
+}
+
+/* Center Images */
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 25px;
+  max-width: 100%;
+}
+
+/* Unordered list style */
+/* First level */
+ul > li:before {
+  content: ' ';
+}
+ul > li {
+  list-style-type: disc;
+}
+/* Second level */
+ul > li > ul > li:before {
+  content: ' ';
+}
+ul > li > ul > li {
+  list-style-type: circle;
+}
+
+
+/* Code */
+pre {
+  width: auto !important;
+  left: 0px !important;
+  padding: 10px 20px 10px 20px !important;
+  border-radius: 5px !important;
+  border-color: #adb5bd !important;
+  border-width: thin !important;
+  border-style: solid !important;
+}
+pre.prettyprint {
+  background-color: #f8f8f8 !important;
+}
+
+
+
+/**********/
+/* Table  */
+/**********/
+table.rmdtable {
+  width: 50% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  margin-bottom: 25px;
+  border-bottom: none !important;
+  border-spacing: 0px !important;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  background-color: #c7b081;
+}
+
+table.rmdtable th {
+  background: none !important;
+  background-color: steelblue!important;
+  padding: 10px;
+  text-align: center !important;
+}
+
+table.rmdtable td, table th {
+    padding: 1em 1em !important;
+}
+
+/* Round borders */
+table.rmdtable th:first-child {
+    border-radius: 5px 0 0 0;
+}
+table.rmdtable th:last-child {
+    border-radius: 0 5px 0 0;
+}
+
+table.rmdtable tr:last-child td:first-child {
+    border-radius: 0 0 0 5px;
+}
+table.rmdtable tr:last-child td:last-child {
+    border-radius: 0 0 5px 0;
+}
+
+/* Table Hover */
+table.rmdtable > tbody > tr:hover > td,
+table.rmdtable > tbody > tr:hover > th {
+  background-color: #c7b081;
+}
+
+
+/**********************
+   Link text decoration
+***********************/
+/* unvisited link */
+a:link {
+  color: #4d0221;
+}
+/* visited link */
+a:visited {
+  color: turquoise;
+}
+/* mouse over link */
+a:hover {
+  color: hotpink;
+}
+/* selected link */
+a:active {
+  color: lightblue;
+}
+
+
