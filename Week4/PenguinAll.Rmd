@@ -1,0 +1,178 @@
+---
+title: "Penguin Sizes"
+author: "Isabelle Rennenberg"
+output: 
+  html_document: 
+    code_folding: hide
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    toc_depth: 4
+    theme: "darkly"
+    number_sections: true
+    code_download: true
+      
+    
+---  
+
+
+<style type="text/css">
+
+h1.title {
+  font-size: 38px;
+  color: #41b6c4;
+  text-align: center;
+}
+h4.author { /* Header 4 - and the author and data headers use this too  */
+    font-size: 18px;
+  font-family: "Times New Roman", Times, serif;
+  color: #c7e9b4;
+  text-align: center;
+}
+h1 {
+    font-size: 22px;
+    font-family: "Times New Roman", Times, serif;
+    color: #c7e9b4;
+    text-align: left;
+}
+</style>
+
+
+```{r setup, include=FALSE}
+# code chunk specifies whether the R code, warnings, and output 
+# will be included in the output files.
+if (!require("tidyverse")) {
+   install.packages("tidyverse")
+   library(tidyverse)
+}
+if (!require("knitr")) {
+   install.packages("knitr")
+   library(knitr)
+}
+if (!require("cowplot")) {
+   install.packages("cowplot")
+   library(cowplot)
+}
+if (!require("latex2exp")) {
+   install.packages("latex2exp")
+   library(latex2exp)
+}
+if (!require("plotly")) {
+   install.packages("plotly")
+   library(plotly)
+}
+if (!require("gapminder")) {
+   install.packages("gapminder")
+   library(gapminder)
+}
+if (!require("png")) {
+    install.packages("png")             # Install png package
+    library("png")
+}
+if (!require("RCurl")) {
+    install.packages("RCurl")             # Install RCurl package
+    library("RCurl")
+}
+if (!require("colourpicker")) {
+    install.packages("colourpicker")              
+    library("colourpicker")
+}
+if (!require("gganimate")) {
+    install.packages("gganimate")              
+    library("gganimate")
+}
+if (!require("gifski")) {
+    install.packages("gifski")              
+    library("gifski")
+}
+if (!require("magick")) {
+    install.packages("magick")              
+    library("magick")
+}
+if (!require("grDevices")) {
+    install.packages("grDevices")              
+    library("grDevices")
+}
+if (!require("jpeg")) {
+    install.packages("jpeg")              
+    library("jpeg")
+}
+if (!require("VGAM")) {
+    install.packages("VGAM")              
+    library("VGAM")
+}
+if (!require("MASS")) {
+    install.packages("MASS")              
+    library("MASS")
+}
+if (!require("nnet")) {
+    install.packages("nnet")              
+    library("nnet")
+}
+if (!require("cluster")) {
+    install.packages("cluster")              
+    library("cluster")
+}
+
+knitr::opts_chunk$set(echo = TRUE,       
+                      warning = FALSE,   
+                      result = TRUE,   
+                      message = FALSE,
+                      comment = NA)
+```
+
+# Species and Relative Sizes
+
+The following data includes size measurements for adult penguins from Palmer Station, Antarctica. To note, the body mass variable has been resized by 4000. All observations with missing values were removed. The dataset, after removal of missing values, had 333 observations and 9 variables. The following chart analyzes:
+
+* **bill length**
+* **flipper length**
+* **body mass**
+
+```{r, include=FALSE}
+penguin <- read.csv(file="https://isarenn.github.io/irennenberg/Week3/w03-penguins.csv")
+sum(is.na(penguin))
+penguin2 <- penguin[complete.cases(penguin),] #removing observations with missing values
+
+```
+```{r}
+penguin.img <- "https://isarenn.github.io/irennenberg/Week3/penguin2.png"
+my.penguin <- readPNG(getURLContent(penguin.img))
+raster.penguin <- as.raster(my.penguin) 
+
+bill.length = penguin2$bill_length_mm
+flipper.length = penguin2$flipper_length_mm
+body.mass = (penguin2$body_mass_g)/5000
+species = penguin2$species
+
+adelie.id = which(species=="Adelie")  # Here are our three species of penguin
+gentoo.id = which(species=="Gentoo")
+chinstrap.id = which(species=="Chinstrap")
+
+## color code
+#  col.code = c(alpha("red",0.5),alpha("blue",0.5),alpha("cyan",0.5))
+par(bg="#222222")
+
+plot(bill.length, flipper.length, main = "Bill Length vs Flipper Length", col.main="#ffffd9", col.lab= "#7fcdbb", col.ticks="#41b6c4", col.axis="#7fcdbb", type = "n")
+box(col="#41b6c4")
+
+points(bill.length[adelie.id], flipper.length[adelie.id], 
+       pch = 19, col = "#fa9fb5", cex = body.mass[adelie.id], alpha = 0.1) 
+points(bill.length[gentoo.id], flipper.length[gentoo.id], 
+       pch = 19, col = "#7fcdbb", cex = body.mass[gentoo.id], alpha = 0.1)
+points(bill.length[chinstrap.id], flipper.length[chinstrap.id], 
+       pch = 19, col = "#2c7fb8", cex = body.mass[chinstrap.id], alpha = 0.1)
+legend("topleft", c("adelie", "gentoo", "chinstrap"), 
+                  border="#41b6c4",
+                  bg="#ffffd9",
+                  col=c("#fa9fb5", "#7fcdbb", "#2c7fb8"),
+                  pch=c(19, 19, 19))
+
+rasterImage(raster.penguin,xleft=56,ybottom=185, xright=60, ytop=205)
+text(45, 172.25, "The size is proportional to penguin body mass", col = "#ffffd9", cex = 1)
+
+```
+
+# Chart Results
+
+Based on the plot, it is visible that flipper length is highest for the gentoo penguins. The gentoo penguin bill length is larger than the adelie, and spans across the chinstrap. The adelie and chinstrap penguins overall have a lower flipper length, and adelie penguins seem to have the smallest flipper length and bill length. The bodymass of the gentoo is larger, as the size of the points on the plot are large. 
