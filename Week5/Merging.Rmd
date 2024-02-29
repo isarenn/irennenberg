@@ -1,0 +1,290 @@
+---
+title: "Country Comparisons"
+author: "Isabelle Rennenberg"
+output: 
+  html_document: 
+    code_folding: hide
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    toc_depth: 4
+    theme: "spacelab"
+    number_sections: true
+    code_download: true
+      
+    
+---  
+
+<style type="text/css">
+
+h1.title {
+  font-size: 38px;
+  color: #0000FF;
+  text-align: center;
+}
+h4.author { /* Header 4 - and the author and data headers use this too  */
+    font-size: 18px;
+  font-family: "Times New Roman", Times, serif;
+  color: #41b6c4;
+  text-align: center;
+}
+h1 {
+    font-size: 22px;
+    font-family: "Times New Roman", Times, serif;
+    color: #41b6c4;
+    text-align: left;
+}
+</style>
+
+
+```{r setup, include=FALSE}
+# code chunk specifies whether the R code, warnings, and output 
+# will be included in the output files.
+options(repos = list(CRAN="http://cran.rstudio.com/"))
+if (!require("tidyverse")) {
+   install.packages("tidyverse")
+   library(tidyverse)
+}
+if (!require("knitr")) {
+   install.packages("knitr")
+   library(knitr)
+}
+if (!require("cowplot")) {
+   install.packages("cowplot")
+   library(cowplot)
+}
+if (!require("latex2exp")) {
+   install.packages("latex2exp")
+   library(latex2exp)
+}
+if (!require("plotly")) {
+   install.packages("plotly")
+   library(plotly)
+}
+if (!require("gapminder")) {
+   install.packages("gapminder")
+   library(gapminder)
+}
+if (!require("png")) {
+    install.packages("png")             # Install png package
+    library("png")
+}
+if (!require("RCurl")) {
+    install.packages("RCurl")           # Install RCurl package
+    library("RCurl")
+}
+if (!require("colourpicker")) {
+    install.packages("colourpicker")              
+    library("colourpicker")
+}
+if (!require("gifski")) {
+    install.packages("gifski")              
+    library("gifski")
+}
+if (!require("magick")) {
+    install.packages("magick")              
+    library("magick")
+}
+if (!require("grDevices")) {
+    install.packages("grDevices")              
+    library("grDevices")
+}
+### ggplot and extensions
+if (!require("ggplot2")) {
+    install.packages("ggplot2")              
+    library("ggplot2")
+}
+if (!require("gganimate")) {
+    install.packages("gganimate")              
+    library("gganimate")
+}
+if (!require("ggridges")) {
+    install.packages("ggridges")              
+    library("ggridges")
+}
+if (!require("graphics")) {
+    install.packages("graphics")              
+    library("graphics")
+}
+
+knitr::opts_chunk$set(echo = TRUE,       
+                      warning = FALSE,   
+                      result = TRUE,   
+                      message = FALSE,
+                      comment = NA)
+```
+
+# Data Preparation
+
+To create the data set used for this analysis, four data sets were imported and manipulated. One dataset included income, one life expectancy, one population size, and a final dataset with region. All data sets were combined in order to create a final data set with the following variables: 
+
+* **Country**
+* **Income**
+* **Year**
+* **Life Expectancy**
+* **Region**
+* **Population Size**
+
+This final data set will be evaluated in the following sections. Please refer to the following code that was used in order to create this dataset. 
+
+```{r}
+
+income <- read.csv(file="https://isarenn.github.io/irennenberg/Week5/income_per_person.csv")
+life <- read.csv(file="https://isarenn.github.io/irennenberg/Week5/life_expectancy_years.csv")
+population <- read.csv(file="https://isarenn.github.io/irennenberg/Week5/population_total.csv")
+region <- read.csv((file="https://isarenn.github.io/irennenberg/Week5/countries_total.csv"))
+
+##reading in files from github
+
+##reshape income so that there are three columns, country year and income
+
+income2 <- income %>%
+  gather(key="Year",
+         value="Income",
+         - geo,
+         na.rm=TRUE)
+income3 <- income2 %>%
+  mutate(Year=substr(Year,2,5))
+
+names(income3)[1]='Country'
+
+##reshape life expectancy : country, year, life expectancy
+
+life2 <- life %>%
+  gather(key="Year",
+         value="LifeExp",
+         - geo,
+         na.rm=TRUE)
+life3 <- life2 %>%
+  mutate(Year=substr(Year,2,5))
+
+names(life3)[1]='Country'
+
+##reshaping population in the same way. 
+
+pop2 <- population %>%
+  gather(key="Year",
+         value="Population",
+         - geo,
+         na.rm=TRUE)
+pop3 <- pop2 %>%
+  mutate(Year=substr(Year,2,5))
+
+names(pop3)[1]='Country'
+
+##Merge/join the above life and income sets to create one new dataset 'LifeExpIncom' with variables country,year,lifeexp and income
+
+LifeExpIncom <- merge(income3, life3, by=c("Year","Country"))
+
+## Merge the above dataset with the region dataset, so that the resulting dataset has income, lifeexp, population size and country region
+
+names(region)[1]='Country'
+region2 <- subset(region, select=-c(alpha.2, alpha.3, country.code, iso_3166.2, sub.region, intermediate.region, region.code, sub.region.code, intermediate.region.code))
+
+LifeExpIncom2 <- merge(LifeExpIncom, region2, by="Country")
+
+##Merge the above dataset with population so that there is income, lifeexp, population size country region and population size
+
+LifeExpIncom3 <- merge(LifeExpIncom2, pop3, by=c("Year","Country"))
+
+write.csv(LifeExpIncom3, "LifeExpIncomFinal.csv")
+
+```
+
+# Data Set Description
+
+The final data set has 37,590 observations and 6 variables. The data sets were retrieved from the course project data repository under the World Life Expectancy data section. The data was collected from a public domain. 
+
+# Data For Year 2000
+
+In order to proceed with the data set, only the year 2000 was observed. The data was subset using the below code. 
+
+```{r}
+
+d2000data <- LifeExpIncom3 %>%
+  filter(Year=='2000')
+
+```
+
+# Usage of ggplot Scatterplot
+
+A scatter plot of Income and Life Expectancy was created. 
+
+The below data plot shows that life expectancy is very low the close the income gets to zero. As income increases, as does life expectancy. Life expectancy increases very sharply from 0 to ~1500, where afterwards it stabilizes as income increases. 
+```{r, fig.align='center'}
+d2000.income <- d2000data$Income
+d2000.lifeexp <- d2000data$LifeExp
+d2000.country <- d2000data$Country
+d2000.region <- d2000data$region
+d2000.pop <- d2000data$Population
+
+ggplot(data = d2000data, mapping = aes(x = d2000.income, y = d2000.lifeexp)) +
+  geom_point()+
+  labs(
+                 x = "Income",
+                 y = "Life Expectancy",
+                 title = "Association between Income and Life Expectancy",
+                 subtitle = "Data for the Year 2000",
+                 caption = paste("Created on", Sys.Date())) +
+             theme_gray() 
+```
+
+# Manipulating the ggplot to Includ the Third Numeric Variable
+
+Now, the point size will be manipulated to display the population size.
+
+This dataset now shows bigger points as being higher populations. It is seen that higher populations tend to be lower on the spectrum in terms of income. The very high income areas show points that have a smaller size, and therefore smaller population. 
+
+```{r, fig.align='center'}
+
+ggplot(data = d2000data, mapping = aes(x = d2000.income, y = d2000.lifeexp, size=d2000.pop)) +
+  geom_point()+
+  labs(
+                 x = "Income",
+                 y = "Life Expectancy",
+                 size="Population Size",
+                 title = "Association between Income and Life Expectancy",
+                 subtitle = "Data for the Year 2000",
+                 caption = paste("Created on", Sys.Date())) +
+             theme_gray() 
+
+```
+
+# Manipulating the ggplot to Includ the Categorical Region Variable
+
+Now, the point color will be manipulated to show the 5 different region categories. The categories are as follows: 
+
+* **Africa**
+* **Americas**
+* **Asia**
+* **Europe**
+* **Oceania** 
+
+This final scatter plot shows us some distinct sections for select regions. The lower region, or Africa, tends to be localized near the lower life expectancy and lower income. The Asia region spans the largest income range, from being localized above the Africa cluster, to all the way to the right (or the highest income group). Within the Asia group, Oceania, Americas and Europe reside. Not all regions are isolated to one area of the scatter plot. There are certain trends for areas in which the regions reside, but there are some points that exceed that area. For example, there are a few Africa region points that are among the Americas/Europe/Asia points. 
+
+It is important to note that the frequency for the Oceania region is much lower than the other regions. 
+
+```{r, fig.align='center'}
+
+ggplot(data = d2000data, mapping = aes(x = d2000.income, y = d2000.lifeexp, size=d2000.pop, color=d2000.region)) +
+  geom_point()+
+  scale_color_manual(values=c("#FFD700", "#EA5F94","#0000FF","#84FFA9","#FF8F00")) +
+  labs(
+                 x = "Income",
+                 y = "Life Expectancy",
+                 size="Population Size",
+                 color="Region",
+                 title = "Association between Income and Life Expectancy",
+                 subtitle = "Data for the Year 2000",
+                 caption = paste("Created on", Sys.Date())) +
+             theme_gray() 
+
+```
+
+# Final Conclusions
+
+For the three graphs that were made from the dataset that was created using the four original sets, it is evident that there is a relationship between income and life expectancy. In addition, it is evident that higher populations tend to be lower in terms of income and life expectancy. Points of high income and life expectancy were all smaller in size, indicating a lower population, with the exception of a point for the Americas in the final graph. It was found that when changing the color for region, it was most evident that the Africa region was densely close at the lower income and lower life expectancy area. The other four regions- Oceania, Europe, Asia and Americas, were (for the most part) higher than the Africa region for life expectancy and income. There were some Africa points on the graph that were among the other regions. The Asia region was second to Africa in that there seemed to be grouping of points in the mid-range of the graph. 
+
+The graph showed that from the 0 to ~1500 income range, there was a sharp increase in life expectancy. Following ~30,000 (income) the life expectancy remains stable. Life expectancy was the lowest when income was incredibly close to 0, and increased exponentially the farther away from zero until the stabilization occurred. 
+
+Thank you! 
