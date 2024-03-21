@@ -1,0 +1,266 @@
+---
+title: "Visualizing Spatial Information"
+author: "Isabelle Rennenberg"
+output: 
+  html_document: 
+    code_folding: hide
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    toc_depth: 4
+    theme: "spacelab"
+    number_sections: true
+    code_download: true
+      
+    
+---  
+
+
+<style type="text/css">
+
+h1.title {
+  font-size: 38px;
+  color: #0000FF;
+  text-align: center;
+}
+h4.author { /* Header 4 - and the author and data headers use this too  */
+    font-size: 18px;
+  font-family: "Times New Roman", Times, serif;
+  color: #41b6c4;
+  text-align: center;
+}
+h1 {
+    font-size: 22px;
+    font-family: "Times New Roman", Times, serif;
+    color: #41b6c4;
+    text-align: left;
+}
+</style>
+
+
+```{r setup, include=FALSE}
+# code chunk specifies whether the R code, warnings, and output 
+# will be included in the output files.
+if (!require("tidyverse")) {
+   install.packages("tidyverse")
+   library(tidyverse)
+}
+if (!require("knitr")) {
+   install.packages("knitr")
+   library(knitr)
+}
+if (!require("plotly")) {
+   install.packages("plotly")
+   library(plotly)
+}
+if (!require("gapminder")) {
+   install.packages("gapminder")
+   library(gapminder)
+}
+if (!require("RCurl")) {
+    install.packages("RCurl")             # Install RCurl package
+    library("RCurl")
+}
+if (!require("colourpicker")) {
+    install.packages("colourpicker")              
+    library("colourpicker")
+}
+if (!require("gganimate")) {
+    install.packages("gganimate")              
+    library("gganimate")
+}
+if (!require("gifski")) {
+    install.packages("gifski")              
+    library("gifski")
+}
+if (!require("magick")) {
+    install.packages("magick")              
+    library("magick")
+}
+if (!require("grDevices")) {
+    install.packages("grDevices")              
+    library("grDevices")
+}
+if (!require("leaflet")) {
+    install.packages("leaflet")              
+    library("leaflet")
+}
+if (!require("maps")) {
+    install.packages("maps")              
+    library("maps")
+}
+if (!require("htmltools")) {
+    install.packages("htmltools")              
+    library("htmltools")
+}
+if (!require("htmlwidgets")) {
+    install.packages("htmlwidgets")              
+    library("htmlwidgets")
+}
+if (!require("leaflegend")) {
+    install.packages("leaflegend")              
+    library("leaflegend")
+}
+if (!require("geojsonio")) {
+    install.packages("geojsonio")              
+    library("geojsonio")
+}
+if (!require("stringi")) {
+    install.packages("stringi")              
+    library("stringi")
+}
+if (!require("RColorBrewer")) {
+    install.packages("RColorBrewer")              
+    library("RColorBrewer")
+}
+if (!require("tigris")) {
+    install.packages("tigris")              
+    library("tigris")
+}
+if (!require("leafpop")) {
+    install.packages("leafpop")              
+    library("leafpop")
+}
+if (!require("leafem")) {
+    install.packages("leafem")              
+    library("leafem")
+}
+if (!require("tmap")) {
+    install.packages("tmap")              
+    library("tmap")
+}
+if (!require("tmaptools")) {
+    install.packages("tmaptools")              
+    library("tmaptools")
+}
+if (!require("webshot2")) {
+    install.packages("webshot2")              
+    library("webshot2")
+}
+if (!require("sf")) {
+    install.packages("sf")              
+    library("sf")
+}
+if (!require("terra")) {
+    install.packages("terra")              
+    library("terra")
+}
+if (!require("leafpop")) {
+    install.packages("leafpop")              
+    library("leafpop")
+}
+
+##
+knitr::opts_chunk$set(echo = TRUE,       
+                      warning = FALSE,   
+                      result = TRUE,   
+                      message = FALSE,
+                      comment = NA)
+```
+
+# Data Preparation: Gas Stations
+
+The gas station data set was used for the first part of this analysis. In the gas station data set, there are 72798 observations of 32 variables. Some variables include: state, county, address, coordinates, description, address, and point of compromise (POC).
+
+Using this data set, a new data set was created by randomly selecting 500 observations. The resulting data set was 500 observations of all 32 variables. 
+
+```{r}
+
+gas <- read.csv(file="https://isarenn.github.io/irennenberg/Week7/POC.csv") #reading in the dataset from githbub
+
+gas2 <-gas[sample(nrow(gas), size=500),] #Getting a random sample
+
+
+```
+
+# Gas Stations: Interactive Map
+
+Using the R Map Library, the following interactive map of the gas station data was created. The pop ups include: 
+
+* **State**
+* **County**
+* **Address**
+* **Zip Code**
+
+```{r fig.align='center', fig.height=4, fig.width=6}
+
+label.msg<-paste(paste("State", gas2$STATE), paste("County", gas2$county),
+                 paste("Address", gas2$ADDRESS), paste("Zip", gas2$ZIPnew))
+
+# making static leaflet map
+leaflet(gas2) %>%
+  addTiles() %>% 
+  setView(lng=mean(gas2$xcoord), lat=mean(gas2$ycoord), zoom = 14) %>%
+   addRectangles(
+    lng1 = min(gas2$xcoord), lat1 = min(gas2$ycoord),
+    lng2 = max(gas2$xcoord), lat2 = max(gas2$ycoord),
+    fillColor = "transparent" 
+    ) %>%
+  fitBounds(
+    lng1 = min(gas2$xcoord), lat1 = min(gas2$ycoord),
+    lng2 = max(gas2$xcoord), lat2 = max(gas2$ycoord) ) %>%
+  addMarkers(~xcoord, ~ycoord, label = ~label.msg)
+
+```
+
+# Data Prepartion: Philadelphia Crime Data
+
+Another data set was used: Philly Crime data. This data set shows longitudinal crime cases since 2014. There are 15520 observations and 18 variables in this dataset. 
+
+From this data set, the year was extracted from the date and a new variable "year" was created. 
+
+Additionally, a subset was made with only 2023 data. 
+
+```{r}
+
+crime <- read.csv(file="https://isarenn.github.io/irennenberg/Week7/PhillyCrimeSince2015.csv") #reading in the dataset from githbub
+
+crime$year <- format(as.Date(crime$date, format="%m/%d/%Y %H:%M"), "%Y")
+
+d2023crime <- crime %>%
+  filter(year=='2023')
+
+```
+
+# Philadelphia Crime: Interactive Map
+
+Using the above data set, the following map was created to plot crime locations. Different colors were used to label fatal and non fatal crimes. 
+
+The hover included the following information:
+
+* **Sex**
+* **Fatality?**
+* **Neighborhood**
+* **Race**
+* **Date**
+* **Police District**
+
+```{r}
+
+map_options <- list(
+  scope = 'usa',
+  projection = list(type = 'regular usa'),
+  showlakes = TRUE,
+  lakecolor = toRGB('white')
+)
+
+###
+plot_geo(d2023crime, lat = ~lat, lon = ~lng) %>% 
+  add_markers( text = ~paste(sex, fatal, neighborhood, race, date,
+                             paste("Police District:", police_district), 
+                             sep = "<br>"),
+              color = ~fatal, 
+              symbol = "circle", 
+              hoverinfo = "text")   %>% 
+  colorbar(title = "Fatality<br>2011.2")  %>% 
+  layout( title = 'Philadelphia Crime 2023',  geo=list(
+      scope = 'usa',
+      center=list(lat=39.952583, lon=-75.165222),
+      projection = list(scale = 300)
+    )
+  )
+
+```
+From the map, we can see that the majority of crimes were non fatal. We can also see that there were very many crimes in 2023.The crimes are clustered in the center-most portion of the city, and are less condensed the farther away from the center you go. 
+
+Thank you!
