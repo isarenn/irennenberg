@@ -1,0 +1,197 @@
+---
+title: "Tableau Basic Graphics"
+author: "Isabelle Rennenberg"
+output: 
+  html_document: 
+    code_folding: hide
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    toc_depth: 4
+    theme: "spacelab"
+    number_sections: true
+    code_download: true
+---  
+
+
+<style type="text/css">
+
+h1.title {
+  font-size: 38px;
+  color: #0000FF;
+  text-align: center;
+}
+h4.author { /* Header 4 - and the author and data headers use this too  */
+    font-size: 18px;
+  font-family: "Times New Roman", Times, serif;
+  color: #41b6c4;
+  text-align: center;
+}
+h1 {
+    font-size: 22px;
+    font-family: "Times New Roman", Times, serif;
+    color: #41b6c4;
+    text-align: left;
+}
+</style>
+
+
+```{r setup, include=FALSE}
+if (!require("Stat2Data")) {
+   install.packages("Stat2Data")
+   library(Stat2Data)
+}
+if (!require("knitr")) {
+   install.packages("knitr")
+   library(knitr)
+}
+if (!require("tidyverse")) {
+   install.packages("tidyverse")
+   library(tidyverse)
+}
+if (!require("knitr")) {
+   install.packages("knitr")
+   library(knitr)
+}
+if (!require("cowplot")) {
+   install.packages("cowplot")
+   library(cowplot)
+}
+if (!require("latex2exp")) {
+   install.packages("latex2exp")
+   library(latex2exp)
+}
+if (!require("plotly")) {
+   install.packages("plotly")
+   library(plotly)
+}
+if (!require("gapminder")) {
+   install.packages("gapminder")
+   library(gapminder)
+}
+if (!require("png")) {
+    install.packages("png")             # Install png package
+    library("png")
+}
+if (!require("RCurl")) {
+    install.packages("RCurl")             # Install RCurl package
+    library("RCurl")
+}
+if (!require("colourpicker")) {
+    install.packages("colourpicker")              
+    library("colourpicker")
+}
+if (!require("gganimate")) {
+    install.packages("gganimate")              
+    library("gganimate")
+}
+if (!require("gifski")) {
+    install.packages("gifski")              
+    library("gifski")
+}
+if (!require("magick")) {
+    install.packages("magick")              
+    library("magick")
+}
+if (!require("grDevices")) {
+    install.packages("grDevices")              
+    library("grDevices")
+}
+if (!require("jpeg")) {
+    install.packages("jpeg")              
+    library("jpeg")
+}
+if (!require("VGAM")) {
+    install.packages("VGAM")              
+    library("VGAM")
+}
+if (!require("MASS")) {
+    install.packages("MASS")              
+    library("MASS")
+}
+if (!require("nnet")) {
+    install.packages("nnet")              
+    library("nnet")
+}
+if (!require("cluster")) {
+    install.packages("cluster")              
+    library("cluster")
+}
+knitr::opts_chunk$set(echo = TRUE,       
+                      warning = FALSE,   
+                      result = TRUE,   
+                      message = FALSE,
+                      comment = NA)
+```
+
+# Data Introduction and Refining
+
+Two data sets were created from the original data set for presidential election information from 2000 to 2020. The original data set had 72617 observations and 12 variables. There were no missing observations in this data set. 
+
+The first created data set calculated the percentage of each participating party within each county. Only the winning party was kept in the data set. This data set was called "COUNTY".
+
+The second data set calculated the percentage of each participating party within each state. Only the winning part was kept in the data set. This data set was called "STATE".
+```{r}
+
+election2  <- read.csv(file="https://isarenn.github.io/irennenberg/Week9/PresidentialElection2000To2020.csv")
+election <- election2[complete.cases(election2),]
+
+election <- mutate(election, percent=(election$candidatevotes/election$totalvotes)*100) #created the percent
+
+state <- election %>%
+  group_by(state, party,year,candidate) %>%
+  summarise(across(c(candidatevotes, totalvotes),sum)) %>%
+  mutate(percent=(candidatevotes/totalvotes)*100) 
+
+county <- election %>%
+  group_by(county_name, party, year,candidate) %>%
+  summarise(across(c(candidatevotes, totalvotes),sum)) %>%
+  mutate(percent=(candidatevotes/totalvotes)*100) 
+
+library(plyr);library(dplyr)
+state <- ddply(state, "state", subset, percent==max(percent))
+
+county <- ddply(county, "county_name", subset, percent==max(percent))
+
+```
+
+# Tableau Map
+
+See the below Tableau Graphic created with the above data set. 
+
+<table border = 0 bordercolor="darkgreen" bgcolor='#f6f6f6'  width=110%  align = center>
+<tr>
+<td>
+
+<div class='tableauPlaceholder' id='viz1712193108642' style='position: relative'>
+
+<noscript><a href='#'><img alt='County Presidential Election Winners 2000-2020 ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Co&#47;CountyPresidentialElectionWinners2000-2020&#47;CountyPresidentialElectionWinners2000-2020&#47;1_rss.png' style='border: none' /></a>
+
+</noscript>
+<object class='tableauViz'  style='display:none;'>
+<param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> 
+<param name='embed_code_version' value='3' /> 
+<param name='site_root' value='' />
+<param name='name' value='CountyPresidentialElectionWinners2000-2020&#47;CountyPresidentialElectionWinners2000-2020' />
+<param name='tabs' value='no' />
+<param name='toolbar' value='yes' />
+<param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Co&#47;CountyPresidentialElectionWinners2000-2020&#47;CountyPresidentialElectionWinners2000-2020&#47;1.png' /> 
+<param name='animate_transition' value='yes' />
+<param name='display_static_image' value='yes' />
+<param name='display_spinner' value='yes' />
+<param name='display_overlay' value='yes' />
+<param name='display_count' value='yes' />
+<param name='language' value='en-US' />
+<param name='filter' value='publish=yes' />
+</object>
+
+</div>        
+
+<script type='text/javascript'>                    
+var divElement = document.getElementById('viz1712193108642');                    
+var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                
+</script>
+
+</td>
+</tr>
+</table>
