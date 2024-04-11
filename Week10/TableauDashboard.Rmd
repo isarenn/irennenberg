@@ -1,0 +1,171 @@
+---
+title: "Tableau Dashboard"
+author: "Isabelle Rennenberg"
+output: 
+  html_document: 
+    code_folding: hide
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    toc_depth: 4
+    theme: "spacelab"
+    number_sections: true
+    code_download: true
+---  
+
+
+<style type="text/css">
+
+h1.title {
+  font-size: 38px;
+  color: #0000FF;
+  text-align: center;
+}
+h4.author { /* Header 4 - and the author and data headers use this too  */
+    font-size: 18px;
+  font-family: "Times New Roman", Times, serif;
+  color: #41b6c4;
+  text-align: center;
+}
+h1 {
+    font-size: 22px;
+    font-family: "Times New Roman", Times, serif;
+    color: #41b6c4;
+    text-align: left;
+}
+</style>
+
+
+```{r setup, include=FALSE}
+if (!require("Stat2Data")) {
+   install.packages("Stat2Data")
+   library(Stat2Data)
+}
+if (!require("knitr")) {
+   install.packages("knitr")
+   library(knitr)
+}
+if (!require("tidyverse")) {
+   install.packages("tidyverse")
+   library(tidyverse)
+}
+if (!require("knitr")) {
+   install.packages("knitr")
+   library(knitr)
+}
+if (!require("cowplot")) {
+   install.packages("cowplot")
+   library(cowplot)
+}
+if (!require("latex2exp")) {
+   install.packages("latex2exp")
+   library(latex2exp)
+}
+if (!require("plotly")) {
+   install.packages("plotly")
+   library(plotly)
+}
+if (!require("gapminder")) {
+   install.packages("gapminder")
+   library(gapminder)
+}
+if (!require("png")) {
+    install.packages("png")             # Install png package
+    library("png")
+}
+if (!require("RCurl")) {
+    install.packages("RCurl")             # Install RCurl package
+    library("RCurl")
+}
+if (!require("colourpicker")) {
+    install.packages("colourpicker")              
+    library("colourpicker")
+}
+if (!require("gganimate")) {
+    install.packages("gganimate")              
+    library("gganimate")
+}
+if (!require("gifski")) {
+    install.packages("gifski")              
+    library("gifski")
+}
+if (!require("magick")) {
+    install.packages("magick")              
+    library("magick")
+}
+if (!require("grDevices")) {
+    install.packages("grDevices")              
+    library("grDevices")
+}
+if (!require("jpeg")) {
+    install.packages("jpeg")              
+    library("jpeg")
+}
+if (!require("VGAM")) {
+    install.packages("VGAM")              
+    library("VGAM")
+}
+if (!require("MASS")) {
+    install.packages("MASS")              
+    library("MASS")
+}
+if (!require("nnet")) {
+    install.packages("nnet")              
+    library("nnet")
+}
+if (!require("cluster")) {
+    install.packages("cluster")              
+    library("cluster")
+}
+knitr::opts_chunk$set(echo = TRUE,       
+                      warning = FALSE,   
+                      result = TRUE,   
+                      message = FALSE,
+                      comment = NA)
+```
+
+# Data Introduction 
+
+The Framingham Heart study was used for this analysis. The dataset comes from a long term study that looks specifically at the population of Framingham Massachusetts. In this study, the aim was to identify risk factors in terms of cardiovascular disease. 
+
+For this Tableau graphic, the main aim was understanding the factors contributing to heart health and how they interact among different genders and education levels.
+
+The 0 represents male, and 1 female. Education is defined as follows: 1 (some high school), 2 (high school), 3 (some college), 4 (college). 
+
+# Tableau Dashboard
+
+See the below Tableau Graphic created with the above data set. 
+
+<table border = 0 bordercolor="darkgreen" bgcolor='#f6f6f6'  width=110%  align = center>
+<tr>
+<td>
+
+<div class='tableauPlaceholder' id='viz1712796544925' style='position: relative'>
+
+<noscript><a href='#'><img alt='Dashboard 1 ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;He&#47;HealthAcrossGenderandEducation&#47;Dashboard1&#47;1_rss.png' style='border: none' /></a>
+
+</noscript>
+<object class='tableauViz'  style='display:none;'>
+<param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
+<param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='HealthAcrossGenderandEducation&#47;Dashboard1' />
+<param name='tabs' value='no' /><param name='toolbar' value='yes' />
+<param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;He&#47;HealthAcrossGenderandEducation&#47;Dashboard1&#47;1.png' />
+<param name='animate_transition' value='yes' />
+<param name='display_static_image' value='yes' />
+<param name='display_spinner' value='yes' />
+<param name='display_overlay' value='yes' />
+<param name='display_count' value='yes' />
+<param name='language' value='en-US' />
+<param name='filter' value='publish=yes' />
+</object>
+</div> 
+<script type='text/javascript'>                    var divElement = document.getElementById('viz1712796544925');                    var vizElement = divElement.getElementsByTagName('object')[0];                    if ( divElement.offsetWidth > 800 ) { vizElement.style.minWidth='420px';vizElement.style.maxWidth='1550px';vizElement.style.width='100%';vizElement.style.minHeight='487px';vizElement.style.maxHeight='887px';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';} else if ( divElement.offsetWidth > 500 ) { vizElement.style.minWidth='420px';vizElement.style.maxWidth='1550px';vizElement.style.width='100%';vizElement.style.minHeight='487px';vizElement.style.maxHeight='887px';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';} else { vizElement.style.width='100%';vizElement.style.height='2027px';}                     var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);               
+</script>
+
+</td>
+</tr>
+</table>
+
+# Results
+
+As seen in the charts, it is evident that for diabetes, average cigarettes per day, stroke, and ten year risk of coronary heart disease, the lower the education level, the higher the risk for negative side effects. There is a very clear decrease in strokes as one goes down in education. This is the same for average cigarettes smoked in a day. Those with only some high school smoke a lot more across all ages. There was not a difference across the education levels for heart rate, but it was seen that men on average had a much higher heart rate than women. In addition, there was a higher count of diabetes in the lowest education group, and a higher count of ten year CHD (risk for coronary heart disease). There was a higher risk for coronary heart disease among men as compared to women. 
