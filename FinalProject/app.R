@@ -261,7 +261,7 @@ server <- function(input, output) {
       geom_boxplot(aes(fill=workDat()[[input$xcat]])) +  
       ylab(input$ycat) + 
       xlab(input$xcat) + 
-      ggtitle(paste("Boxplot of the response variable: ", input$xcat )) +
+      ggtitle(paste("Boxplot of the categorical variable: ", input$xcat )) +
       labs(fill = "Legend") +
       stat_summary(fun=mean, geom="point", shape=5, size=4)  
   })
@@ -294,7 +294,7 @@ server <- function(input, output) {
   output$pie1<-renderPlot({
     mytable<-table(workDat()[[input$pie]])
     labels<-paste(names(mytable),"\n",mytable,sep="")
-    pie(mytable, main=paste("Pie Chart of the response variable: ", input$pie))
+    pie(mytable, main=paste("Pie Chart of the categorical variable: ", input$pie))
   })
   
   
