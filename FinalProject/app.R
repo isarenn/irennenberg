@@ -12,8 +12,8 @@ turnovernum <-subset(turnover, select=c(way,event,extraversion, agreeableness, c
 x.namesnum = names(turnovernum)[-c(1,6)]
 y.namesnum =names(turnovernum)[-1]
 turnovercat <-subset(turnover, select=c(gender,industry,profession,traffic,coach,head_gender,greywage,way))
-x.namescat = names(turnovercat)[-c(1,6)]
-y.namescat =names(turnovercat)[-1]
+x.namescat = names(turnovercat)
+y.namescat =names(turnovercat)
 x.names = names(turnover)[-c(1,6)]
 y.names =names(turnover)[-1]
 
@@ -77,7 +77,7 @@ body0 <-   dashboardBody(
               ),
               box(title="Big5 Personality Scale", width=4, height=300, background="purple",
                   "High Scores Correspond to the top, and low to the bottom characteristics.",
-                  img(src="https://isarenn.github.io/irennenberg/FinalProject/big5.webp", width="100%"),
+                  img(src="https://isarenn.github.io/irennenberg/FinalProject/big5.webp", width="85%"),
                   br()
               ),
               box(title="Variable Definitions", solidHeader=TRUE, width=2, height=300, background="purple",
@@ -85,7 +85,8 @@ body0 <-   dashboardBody(
                   "event= 1(left), 0 (stay)", br(),
                   "traffic=the source the person was hired from", br(),
                   "coach=presence of a coach for probation period", br(),
-                  "head_gender=gender of manager",
+                  "head_gender=gender of manager",br(),
+                  "grey_wage=salary to the tax authorities",
                   br(),
                   br(),
                   br(),
@@ -101,19 +102,24 @@ body0 <-   dashboardBody(
             fluidRow(
               tabBox(
                 title = "Plots",
-                id = "tabset1", height = "512px",
+                id = "tabset1", height = "565px",
                 tabPanel("Boxplot", plotOutput("box1")),
-                tabPanel("ANOVA", tableOutput("anova1")),
                 tabPanel("SxR Table (For EVENT)", tableOutput("table1")),
-                tabPanel("Chi-Sq Test", tableOutput("chi1")),
                 tabPanel("Pie Chart", plotOutput("pie1"))
+              ),
+              tabBox(
+                title="Tests For Significance",
+                side="right",
+                id="tabset3", height="100px",
+                tabPanel("ANOVA", tableOutput("anova1")),
+                tabPanel("Chi-Sq Test", tableOutput("chi1"))
               ),
               box(title="Select X",
                   status="info",
                   width=4, solidHeader=TRUE,
                   selectInput("xcat","X Variable",
                               choices=x.namescat,
-                              selected=x.namescat[4])
+                              selected=x.namescat[5])
               ),
               box(title="Select Y",
                   status="info",
@@ -126,8 +132,8 @@ body0 <-   dashboardBody(
                   status="info",
                   width=4, solidHeader=TRUE,
                   selectInput("pie","Pie Variable",
-                              choices=y.names,
-                              selected=y.names[2])
+                              choices=y.namescat,
+                              selected=y.namescat[5 ])
                   )
               
     )
@@ -141,7 +147,8 @@ body0 <-   dashboardBody(
                 in the study did not have a coach given that they were on probation. There were more managers that were male as compared to female. There was a difference in extraversion
                 if the person had a coach on the probation period, but not for any of the other big5 personalities. The way in which people got to work mostly affected 
                 neuroticism and openness. For the SxR table, it was found that the way you get to work does affect whether or not you leave (p value of 0.0067). However, having a coach during probation
-                did not affect whether or not someone would leave. ")
+                did not affect whether or not someone would leave. There was no difference in gender on whether or not the person left their job, but there were key differences in 
+                personality scores between men and women. ")
             
           )
   )
@@ -270,7 +277,7 @@ server <- function(input, output) {
     summary(anova())
   })
  
-  #2x2 table
+  #sxr table
   
   output$table1<-renderTable({
     table(workDat()[[input$xcat]],turnover$event)
@@ -287,7 +294,7 @@ server <- function(input, output) {
   output$pie1<-renderPlot({
     mytable<-table(workDat()[[input$pie]])
     labels<-paste(names(mytable),"\n",mytable,sep="")
-    pie(mytable)
+    pie(mytable, main=paste("Pie Chart of the response variable: ", input$pie))
   })
   
   
